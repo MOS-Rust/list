@@ -1,3 +1,1 @@
-extern crate alloc;
-
-pub mod dlist;
+mod linked_list;
