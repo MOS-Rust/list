@@ -15,6 +15,12 @@ pub struct ListEntry<T: Linkable<T>> {
     next: *mut T,
 }
 
+impl<T: Linkable<T>> ListEntry<T> {
+    pub fn new() -> Self {
+        Self { prev: ptr::null_mut(), next: ptr::null_mut() }
+    }
+}
+
 impl<T: Linkable<T>> LinkedList<T> {
     pub const fn new() -> Self {
         LinkedList {
