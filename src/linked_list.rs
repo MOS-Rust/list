@@ -9,6 +9,7 @@ pub struct LinkedList<T: Linkable<T>> {
     head: *mut T,
 }
 
+#[derive(Clone, Copy)]
 pub struct ListEntry<T: Linkable<T>> {
     prev: *mut *mut T,
     next: *mut T,
