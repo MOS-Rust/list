@@ -55,5 +55,7 @@ mod list_tests {
         
         }
 
+        assert!(page_list.is_empty() == true);
+
     }
 }
