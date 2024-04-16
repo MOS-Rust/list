@@ -4,12 +4,12 @@ pub unsafe trait Linkable<T: Linkable<T>>: Copy {
     fn link(&self) -> ListEntry<T>;
 }
 
-#[derive(Copy, Clone)]  
+#[derive(Copy, Clone, Debug)]  
 pub struct LinkedList<T: Linkable<T>> {
     head: *mut T,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct ListEntry<T: Linkable<T>> {
     prev: *mut *mut T,
     next: *mut T,
@@ -42,6 +42,10 @@ impl<T: Linkable<T>> LinkedList<T> {
             (*elm).link().prev = &mut self.head;
         }
     }
+
+    pub fn first(&self) -> *mut T {
+        self.head
+    }
 }
 
 pub fn linked_list_insert_before<T: Linkable<T>>(
@@ -72,7 +76,7 @@ pub fn linked_list_remove<T: Linkable<T>>(elm: *mut T) {
         if !(*elm).link().next.is_null() {
             (*(*elm).link().next).link().prev = (*elm).link().prev;
         }
-        (*(*elm).link().prev) = (*elm).link().next;
+        (*((*elm).link().prev)) = (*elm).link().next;
     }
 }
 
