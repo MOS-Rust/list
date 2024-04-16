@@ -1,7 +1,7 @@
 use core::ptr;
 
 pub unsafe trait Linkable<T: Linkable<T>>: Copy {
-    fn link(&self) -> ListEntry<T>;
+    fn link(&mut self) -> &mut ListEntry<T>;
 }
 
 #[derive(Copy, Clone, Debug)]  
@@ -11,8 +11,8 @@ pub struct LinkedList<T: Linkable<T>> {
 
 #[derive(Clone, Copy, Debug)]
 pub struct ListEntry<T: Linkable<T>> {
-    prev: *mut *mut T,
-    next: *mut T,
+    pub prev: *mut *mut T,
+    pub next: *mut T,
 }
 
 impl<T: Linkable<T>> ListEntry<T> {
