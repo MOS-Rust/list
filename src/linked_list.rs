@@ -2,6 +2,8 @@
 //! from linux, rewrite in rust
 
 use core::ptr;
+use core::marker::PhantomData;
+
 
 /// anything organized by linked list should implement this trait
 /// this trait ensures type T in linked list has pointer field
@@ -58,10 +60,17 @@ impl<T: Linkable<T>> LinkedList<T> {
     pub fn first(&self) -> *mut T {
         self.head
     }
+
+    /// get an iterator of the list
+    pub fn iter(&self) -> LinkedListIter<T> {
+        LinkedListIter {
+            current: self.head,
+            _marker: &PhantomData,
+        }
+    }
 }
 
 /// insert elm before listelm
-/// ! this function has NOT been tested 
 pub fn linked_list_insert_before<T: Linkable<T>>(
     listelm: *mut T, elm: *mut T
 ) {
@@ -74,16 +83,16 @@ pub fn linked_list_insert_before<T: Linkable<T>>(
 }
 
 /// insert elm after listelm
-/// ! this function has NOT been tested
 pub fn linked_list_insert_after<T: Linkable<T>>(
     listelm: *mut T, elm: *mut T
 ) {
     unsafe {
         (*elm).link().next = (*listelm).link().next;
-        if (*listelm).link().next.is_null() {
+        if !(*listelm).link().next.is_null() {
             (*(*listelm).link().next).link().prev = &mut (*elm).link().next;
         }
-        (*listelm).link().prev = &mut (*listelm).link().next;
+        (*listelm).link().next = elm;
+        (*elm).link().prev = &mut (*listelm).link().next;
     }
 }
 
@@ -97,4 +106,23 @@ pub fn linked_list_remove<T: Linkable<T>>(elm: *mut T) {
     }
 }
 
-// TODO implement iterator feature for linked list
+pub struct LinkedListIter<'a, T: Linkable<T>> {
+    current: *mut T,
+    _marker: &'a PhantomData<T>,
+}
+
+impl<'a, T: Linkable<T>> Iterator for LinkedListIter<'a, T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.current.is_null() {
+            None
+        } else {
+            let ret = self.current;
+            unsafe {
+                self.current = (*self.current).link().next;
+            }
+            Some(unsafe { *ret })
+        }
+    }
+}
