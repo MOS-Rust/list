@@ -1,5 +1,8 @@
 #[cfg(test)]
 mod list_tests {
+    use alloc::vec::Vec;
+    use alloc::vec;
+
     use crate::linked_list::{linked_list_insert_after, LinkedList};
     use crate::linked_list::{linked_list_insert_before, linked_list_remove, Linkable, ListEntry};
     use core::marker::Copy;
